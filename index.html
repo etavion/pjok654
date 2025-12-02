@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis PJOK Kelas 4–6</title>
+
+<style>
+    body { font-family: Arial, sans-serif; background:#f4f4f4; padding:15px; }
+    .container {
+        max-width:800px; margin:auto; background:white; padding:20px;
+        border-radius:10px; box-shadow:0 0 10px #ccc;
+    }
+    h1{text-align:center;}
+    .hidden{display:none;}
+    .question{
+        background:#eef3ff; padding:12px; margin-bottom:10px; border-radius:8px;
+    }
+    .correct{background:#d7ffd7!important;}
+    .wrong{background:#ffd6d6!important;}
+    #timer{font-size:20px;font-weight:bold;text-align:center;margin-bottom:10px;}
+    button{
+        width:100%; padding:12px; background:#4CAF50; color:white; border:none;
+        border-radius:8px; font-size:18px; margin-top:10px;
+    }
+    .explain{margin-top:8px; font-style:italic;}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>Kuis PJOK Kelas 4–6</h1>
+
+<button id="startBtn">Mulai Kuis</button>
+
+<div id="timer" class="hidden">⏳ Waktu: <span id="time">60:00</span></div>
+
+<form id="quizForm" class="hidden"></form>
+
+<button id="submitBtn" class="hidden">Selesai</button>
+
+<div id="result" class="hidden"></div>
+
+</div>
+
+<script>
+// ====== 40 SOAL ======
+const questions = [
+    // sama seperti punyamu → TIDAK DIUBAH
+    {q:"1. Permainan invasi adalah permainan yang bertujuan untuk…",
+     a:["Menjaga daerah sendiri","Menyerang dan memasuki daerah lawan","Melempar bola cepat"],
+     c:1, d:"Tujuan permainan invasi = menyerang daerah lawan untuk mencetak skor."},
+
+    {q:"2. Contoh permainan invasi adalah…",
+     a:["Sepak bola","Kasti","Bola kasti"], c:0, d:"Sepak bola = permainan invasi."},
+
+    {q:"3. Pada permainan invasi, kerja sama dilakukan untuk…",
+     a:["Menguasai bola dan menyerang","Berlari mengelilingi lapangan","Diam di tempat"],
+     c:0, d:"Kerja sama penting untuk serangan efektif."},
+
+    {q:"4. Istilah 'menyerang' berarti…",
+     a:["Membantu lawan","Mengambil alih daerah lawan","Berhenti bermain"],
+     c:1, d:"Menyerang = masuk area lawan."},
+
+    {q:"5. Bertahan dalam permainan invasi berarti…",
+     a:["Menjaga area sendiri","Menambah pemain","Membuang bola"],
+     c:0, d:"Bertahan = menjaga wilayah sendiri."},
+
+    // Bola kecil
+    {q:"6. Permainan bola kecil biasanya menggunakan…",
+     a:["Bola besar","Bola kecil dan alat pemukul","Bola plastik besar"],
+     c:1, d:"Contoh: kasti, rounders."},
+
+    {q:"7. Dalam kasti, pemukul bola disebut…",
+     a:["Pelambung","Pemain tengah","Pemain pemukul"],
+     c:2, d:"Pemain pemukul = tugas memukul bola."},
+
+    {q:"8. Melempar bola dalam permainan bola kecil harus dilakukan dengan…",
+     a:["Arah sembarangan","Tepat sasaran","Mata tertutup"],
+     c:1, d:"Harus akurat dan terarah."},
+
+    {q:"9. Lari cepat setelah memukul bola disebut…",
+     a:["Sprint","Menitip","Berjalan"],
+     c:0, d:"Setelah memukul → sprint ke base."},
+
+    {q:"10. Kasti bertujuan untuk…",
+     a:["Memukul dan berlari mengumpulkan angka","Duduk diam","Menendang bola"],
+     c:0, d:"Tujuan kasti = pungut poin dari berlari."},
+
+    // Pencak silat
+    {q:"11. Pencak silat adalah seni bela diri asli…",
+     a:["Malaysia","Indonesia","Thailand"],
+     c:1, d:"Asli Indonesia."},
+
+    {q:"12. Gerakan menangkis bertujuan untuk…",
+     a:["Menyerang lawan","Menghindari serangan","Berlari"],
+     c:1, d:"Menangkis = bertahan."},
+
+    {q:"13. Tendangan depan dilakukan dengan…",
+     a:["Mendorong kaki ke depan","Memutar badan","Melompat"],
+     c:0, d:"Kaki lurus ke depan."},
+
+    {q:"14. Sikap kuda-kuda berfungsi untuk…",
+     a:["Keseimbangan","Lari cepat","Melatih telinga"],
+     c:0, d:"Dasar keseimbangan silat."},
+
+    {q:"15. Teknik pukulan menggunakan…",
+     a:["Kepala","Tangan","Lutut"],
+     c:1, d:"Pukulan = tangan."},
+
+    // Handball
+    {q:"16. Handball dimainkan dengan…",
+     a:["Kaki","Tangan","Lutut"],
+     c:1, d:"Handball = tangan."},
+
+    {q:"17. Tujuan utama handball adalah…",
+     a:["Memasukkan bola ke gawang","Menjaga bola diam","Memukul bola"],
+     c:0, d:"Mencetak gol ke gawang lawan."},
+
+    {q:"18. Melempar bola ke teman disebut…",
+     a:["Dribble","Passing","Shooting"],
+     c:1, d:"Passing = mengoper."},
+
+    {q:"19. Menembak ke gawang disebut…",
+     a:["Shooting","Passing","Guarding"],
+     c:0, d:"Shooting = mencetak gol."},
+
+    {q:"20. Penjaga gawang bertugas untuk…",
+     a:["Mencetak gol","Menahan bola lawan","Melempar bola ke penonton"],
+     c:1, d:"Kiper = menjaga gawang."},
+
+    // Sepak bola
+    {q:"21. Sepak bola dimainkan dengan…",
+     a:["Tangan","Kaki","Lutut"],
+     c:1, d:"Sepak bola = kaki."},
+
+    {q:"22. Pemain yang bertugas menghalangi lawan disebut…",
+     a:["Penyerang","Gelandang","Bek"],
+     c:2, d:"Bek menjaga pertahanan."},
+
+    {q:"23. Gol terjadi ketika…",
+     a:["Bola melewati garis gawang","Pemain jatuh","Bola keluar"],
+     c:0, d:"Gol sah jika melewati garis."},
+
+    {q:"24. Teknik menggiring bola disebut…",
+     a:["Dribble","Heading","Tackle"],
+     c:0, d:"Dribble = membawa bola."},
+
+    {q:"25. Kick off dilakukan pada…",
+     a:["Awal permainan","Bola keluar","Pemain cedera"],
+     c:0, d:"Kick off = mulai pertandingan."},
+
+    // Lanjutan
+    {q:"26. Lempar lembing termasuk cabang…",
+     a:["Atletik","Renang","Senam"],
+     c:0, d:"Nomor atletik."},
+
+    {q:"27. Senam lantai dilakukan di atas…",
+     a:["Matras","Rumput","Air"],
+     c:0, d:"Matras supaya aman."},
+
+    {q:"28. Renang gaya bebas menggunakan gerakan kaki…",
+     a:["Katak","Dolphin","Naik turun"],
+     c:2, d:"Kaki naik turun bergantian."},
+
+    {q:"29. Lari jarak jauh memerlukan…",
+     a:["Energi besar dan cepat","Daya tahan tubuh","Melompat tinggi"],
+     c:1, d:"Butuh stamina tinggi."},
+
+    {q:"30. Passing atas dilakukan dalam…",
+     a:["Bola voli","Sepak bola","Kasti"],
+     c:0, d:"Voli = passing atas."},
+
+    {q:"31. Dribble tinggi digunakan untuk…",
+     a:["Menyerang cepat","Mengulur waktu","Mundur"],
+     c:0, d:"Dribble tinggi untuk kecepatan."},
+
+    {q:"32. Start jongkok digunakan untuk…",
+     a:["Lari cepat","Lari jauh","Lari santai"],
+     c:0, d:"Start sprint."},
+
+    {q:"33. Gerak manipulatif adalah…",
+     a:["Menggunakan benda","Tidak bergerak","Berjalan"],
+     c:0, d:"Contoh: menendang, menangkap."},
+
+    {q:"34. Lari estafet menggunakan alat bernama…",
+     a:["Bola","Tongkat","Tali"],
+     c:1, d:"Tongkat estafet."},
+
+    {q:"35. Pemanasan berguna untuk…",
+     a:["Mencegah cedera","Membuat mengantuk","Memperlambat tubuh"],
+     c:0, d:"Agar otot siap."},
+
+    {q:"36. Pendinginan berguna untuk…",
+     a:["Menambah kecepatan","Mengembalikan detak jantung","Membuat lelah"],
+     c:1, d:"Mengembalikan tubuh normal."},
+
+    {q:"37. Kebugaran jasmani diperlukan untuk…",
+     a:["Kesehatan tubuh","Tidur lama","Diam terus"],
+     c:0, d:" Agar tubuh sehat."},
+
+    {q:"38. Berdiri satu kaki melatih…",
+     a:["Kekuatan tangan","Keseimbangan","Kelincahan"],
+     c:1, d:"Latih keseimbangan."},
+
+    {q:"39. Push up melatih otot…",
+     a:["Tangan dan dada","Perut","Paha"],
+     c:0, d:"Push up = dada & tangan."},
+
+    {q:"40. Sit up melatih otot…",
+     a:["Perut","Lengan","Leher"],
+     c:0, d:"Sit up = otot perut."},
+];
+
+// ==== TIMER ====
+let timeLeft = 3600;
+
+// ==== DOM ====
+const startBtn = document.getElementById("startBtn");
+const quizForm = document.getElementById("quizForm");
+const submitBtn = document.getElementById("submitBtn");
+const result = document.getElementById("result");
+const timer = document.getElementById("timer");
+
+// ==== MULAI ====
+startBtn.onclick = () => {
+    startBtn.classList.add("hidden");
+    quizForm.classList.remove("hidden");
+    submitBtn.classList.remove("hidden");
+    timer.classList.remove("hidden");
+    loadQuestions();
+    startTimer();
+};
+
+function loadQuestions(){
+    questions.forEach((q,i)=>{
+        const div=document.createElement("div");
+        div.className="question";
+
+        const soal = document.createElement("p");
+        soal.innerHTML = `<b>${q.q}</b>`;
+        div.appendChild(soal);
+
+        q.a.forEach((opt,idx)=>{
+            let label=document.createElement("label");
+            label.innerHTML = `<input type="radio" name="q${i}" value="${idx}"> ${opt}`;
+            div.appendChild(label);
+            div.appendChild(document.createElement("br"));
+        });
+
+        const explain=document.createElement("div");
+        explain.className="explain hidden";
+        explain.textContent="Pembahasan: " + q.d;
+        div.appendChild(explain);
+
+        quizForm.appendChild(div);
+    });
+}
+
+function startTimer(){
+    const t=setInterval(()=>{
+        const m=Math.floor(timeLeft/60);
+        const s=timeLeft%60;
+        document.getElementById("time").textContent=`${m}:${s.toString().padStart(2,"0")}`;
+        timeLeft--;
+
+        if(timeLeft<0){
+            clearInterval(t);
+            finishQuiz();
+        }
+    },1000);
+}
+
+// ==== FINISH ====
+submitBtn.onclick = finishQuiz;
+
+function finishQuiz(){
+    let score=0;
+
+    document.querySelectorAll(".question").forEach((qDiv,i)=>{
+        const answer=document.querySelector(`input[name="q${i}"]:checked`);
+        const correct=questions[i].c;
+
+        if(answer && Number(answer.value)===correct){
+            qDiv.classList.add("correct");
+            score++;
+        } else {
+            qDiv.classList.add("wrong");
+        }
+
+        qDiv.querySelector(".explain").classList.remove("hidden");
+    });
+
+    const nilai = Math.round(score * 100 / questions.length);
+
+    result.classList.remove("hidden");
+    result.innerHTML = `<h2>Nilai Kamu: ${nilai}</h2>`;
+
+    if(nilai >= 75){
+        startConfetti();
+    }
+
+    submitBtn.disabled=true;
+}
+
+// ==== CONFETTI ====
+function startConfetti(){
+    for(let i=0;i<50;i++){
+        const c=document.createElement("div");
+        c.style.position="fixed";
+        c.style.width="8px";
+        c.style.height="8px";
+        c.style.background=`hsl(${Math.random()*360},100%,50%)`;
+        c.style.top="-10px";
+        c.style.left=Math.random()*100+"%";
+        c.style.opacity="0.8";
+        c.style.borderRadius="3px";
+        c.style.animation=`fall ${2+Math.random()*3}s linear forwards`;
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(),5000);
+    }
+}
+</script>
+
+<style>
+@keyframes fall {
+    to { transform: translateY(110vh); }
+}
+</style>
+
+</body>
+</html>
